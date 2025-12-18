@@ -12,8 +12,10 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      // Isso diz ao Vite que "@" aponta para a pasta "client/src"
-      "@": path.resolve(process.cwd(), "./client/src"),
+      // Alias para a pasta client/src
+      "@": path.resolve(process.cwd(), "client/src"),
+      // NOVO: Alias para a pasta shared (necessário para corrigir o erro)
+      "@shared": path.resolve(process.cwd(), "shared"),
     },
   },
   plugins: [
