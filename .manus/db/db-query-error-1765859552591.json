@@ -1,0 +1,8 @@
+{
+  "query": "UPDATE ebooks SET title = 'Mestre das Entregas', cover_url = '/ebook-mestre-entregas.jpg' WHERE id = 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2BVudzRzWYz9QJJ.root --database 3XK7HcK5rhSWNpD3WR4kWN --execute UPDATE ebooks SET title = 'Mestre das Entregas', cover_url = '/ebook-mestre-entregas.jpg' WHERE id = 1;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'cover_url' in 'field list'"
+  ]
+}
