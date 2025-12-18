@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss"
+import tailwindAnimate from "tailwindcss-animate" // Substitui o require
 
 const config = {
   darkMode: ["class"],
@@ -7,7 +8,6 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-    // ADICIONE ESTAS LINHAS PARA COBRIR SUA ESTRUTURA DE PASTAS:
     './client/pages/**/*.{ts,tsx}',
     './client/components/**/*.{ts,tsx}',
     './client/app/**/*.{ts,tsx}',
@@ -16,6 +16,7 @@ const config = {
   ],
   prefix: "",
   theme: {
+    // ... (mantenha o restante do theme igual) ...
     container: {
       center: true,
       padding: "2rem",
@@ -80,7 +81,7 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindAnimate], // Substitui o require
 } satisfies Config
 
 export default config

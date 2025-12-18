@@ -1,7 +1,6 @@
 @import "tailwindcss";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Aponta para o arquivo de configuração na raiz do projeto (2 níveis acima) */
+@config "../../tailwind.config.ts";
 
 @layer base {
   :root {
@@ -30,7 +29,6 @@
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-    /* ... (restante das variáveis dark mode se necessário) */
   }
 }
  
