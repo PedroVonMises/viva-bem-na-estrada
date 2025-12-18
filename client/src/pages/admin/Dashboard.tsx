@@ -1,10 +1,11 @@
 import AdminLayout from "@/components/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { trpc } from "@/lib/trpc";
+import { adminGetStats } from "@shared/data";
 import { FileText, Video, BookOpen, Users, Loader2, TrendingUp } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 export default function AdminDashboard() {
-  const { data: stats, isLoading } = trpc.admin.stats.useQuery();
+  const { data: stats, isLoading } = useQuery({ queryKey: ["adminStats"], queryFn: adminGetStats });
 
   const statCards = [
     {

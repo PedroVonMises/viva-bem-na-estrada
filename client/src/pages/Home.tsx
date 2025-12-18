@@ -3,7 +3,8 @@ import Layout from "@/components/Layout";
 import PostCard from "@/components/PostCard";
 import { ArrowRight, Mail, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { trpc } from "@/lib/trpc";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getPosts, subscribeToNewsletter } from "@shared/data";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -11,16 +12,16 @@ export default function Home() {
   const [email, setEmail] = useState("");
   
   // Buscar posts do banco de dados
-  const { data: featuredPosts, isLoading } = trpc.posts.featured.useQuery({ limit: 3 });
+  const { data: featuredPosts, isLoading } = useQuery({ queryKey: ["featuredPosts"], queryFn: () => getPosts().then(posts => posts.filter(p => p.featured).slice(0, 3)) });
   
   // Mutation para newsletter
-  const newsletterMutation = trpc.newsletter.subscribe.useMutation({
+  const newsletterMutation = useMutation({ mutationFn: (data: { email: string, name?: string }) => subscribeToNewsletter(data.email, data.name),
     onSuccess: (data) => {
-      if (data.success) {
+      if (data) {
         toast.success("Inscrição realizada com sucesso!");
         setEmail("");
       } else {
-        toast.error(data.error || "Erro ao realizar inscrição");
+
       }
     },
     onError: () => {

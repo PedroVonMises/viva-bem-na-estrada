@@ -5,11 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { trpc } from "@/lib/trpc";
+import { adminGetEbookById, adminCreateEbook, adminUpdateEbook, adminGetStats } from "@shared/data";
 import { ArrowLeft, Loader2, Save } from "lucide-react";
 import { Link, useParams, useLocation } from "wouter";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { InsertEbook } from "../../../drizzle/schema";
 
 export default function EbookForm() {
   const params = useParams<{ id: string }>();
@@ -26,12 +28,9 @@ export default function EbookForm() {
     published: true,
   });
 
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
   
-  const { data: ebook, isLoading: loadingEbook } = trpc.admin.ebooks.byId.useQuery(
-    { id: ebookId! },
-    { enabled: !!ebookId }
-  );
+  const { data: ebook, isLoading: loadingEbook } = useQuery({ queryKey: ["adminEbook", ebookId], queryFn: () => adminGetEbookById(ebookId!), enabled: !!ebookId });
 
   useEffect(() => {
     if (ebook) {
@@ -46,11 +45,11 @@ export default function EbookForm() {
     }
   }, [ebook]);
 
-  const createMutation = trpc.admin.ebooks.create.useMutation({
+  const createMutation = useMutation({ mutationFn: (data: InsertEbook) => adminCreateEbook(data),
     onSuccess: () => {
       toast.success("Ebook criado com sucesso!");
-      utils.admin.ebooks.list.invalidate();
-      utils.admin.stats.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["adminEbooks"] });
+      queryClient.invalidateQueries({ queryKey: ["adminStats"] });
       setLocation("/admin/ebooks");
     },
     onError: (error) => {
@@ -58,10 +57,10 @@ export default function EbookForm() {
     }
   });
 
-  const updateMutation = trpc.admin.ebooks.update.useMutation({
+  const updateMutation = useMutation({ mutationFn: (data: { id: number, ebook: Partial<InsertEbook> }) => adminUpdateEbook(data.id, data.ebook),
     onSuccess: () => {
       toast.success("Ebook atualizado com sucesso!");
-      utils.admin.ebooks.list.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["adminEbooks"] });
       setLocation("/admin/ebooks");
     },
     onError: (error) => {
@@ -73,9 +72,9 @@ export default function EbookForm() {
     e.preventDefault();
     
     if (isEditing && ebookId) {
-      updateMutation.mutate({ id: ebookId, data: formData });
+      updateMutation.mutate({ id: ebookId, ebook: formData });
     } else {
-      createMutation.mutate(formData);
+      createMutation.mutate(formData as InsertEbook);
     }
   };
 

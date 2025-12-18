@@ -97,8 +97,8 @@ export default function AdminLayout({
     );
   }
 
-  // Check if user is admin
-  if (user.role !== 'admin') {
+  // A autenticação simples assume que o usuário é admin se estiver autenticado
+  if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-slate-950">
         <div className="flex flex-col items-center gap-8 p-8 max-w-md w-full">
@@ -267,12 +267,12 @@ function AdminLayoutContent({
                 <button className="flex items-center gap-3 rounded-lg px-1 py-1 hover:bg-slate-800 transition-colors w-full text-left group-data-[collapsible=icon]:justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                   <Avatar className="h-9 w-9 border border-slate-700 shrink-0">
                     <AvatarFallback className="text-xs font-medium bg-primary/20 text-primary">
-                      {user?.name?.charAt(0).toUpperCase()}
+                      {"A"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0 group-data-[collapsible=icon]:hidden">
                     <p className="text-sm font-medium truncate leading-none text-white">
-                      {user?.name || "-"}
+                      {"Admin"}
                     </p>
                     <p className="text-xs text-slate-400 truncate mt-1.5">
                       Administrador

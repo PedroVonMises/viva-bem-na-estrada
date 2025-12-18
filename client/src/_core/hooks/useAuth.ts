@@ -1,84 +1,65 @@
-import { getLoginUrl } from "@/const";
-import { trpc } from "@/lib/trpc";
-import { TRPCClientError } from "@trpc/client";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { getLoginUrl } from "../../const";
 
-type UseAuthOptions = {
-  redirectOnUnauthenticated?: boolean;
-  redirectPath?: string;
-};
+// AVISO: Esta é uma autenticação *muito* simplificada e insegura,
+// feita apenas para atender ao requisito de "remover autenticação ou adicionar senha simples"
+// em um ambiente puramente estático (Vercel + Vite).
+// A senha é exposta no código do cliente.
+const SIMPLE_ADMIN_PASSWORD = "super-secret-admin-password"; // Deve ser a mesma do .env
 
-export function useAuth(options?: UseAuthOptions) {
-  const { redirectOnUnauthenticated = false, redirectPath = getLoginUrl() } =
-    options ?? {};
-  const utils = trpc.useUtils();
+const AUTH_TOKEN_KEY = "admin-auth-token";
 
-  const meQuery = trpc.auth.me.useQuery(undefined, {
-    retry: false,
-    refetchOnWindowFocus: false,
+export function useAuth() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(AUTH_TOKEN_KEY) === SIMPLE_ADMIN_PASSWORD;
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const logoutMutation = trpc.auth.logout.useMutation({
-    onSuccess: () => {
-      utils.auth.me.setData(undefined, null);
-    },
-  });
+  const login = useCallback(async (password: string) => {
+    setLoading(true);
+    setError(null);
+    
+    // Simulação de chamada de API
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-  const logout = useCallback(async () => {
-    try {
-      await logoutMutation.mutateAsync();
-    } catch (error: unknown) {
-      if (
-        error instanceof TRPCClientError &&
-        error.data?.code === "UNAUTHORIZED"
-      ) {
-        return;
-      }
-      throw error;
-    } finally {
-      utils.auth.me.setData(undefined, null);
-      await utils.auth.me.invalidate();
+    if (password === SIMPLE_ADMIN_PASSWORD) {
+      localStorage.setItem(AUTH_TOKEN_KEY, SIMPLE_ADMIN_PASSWORD);
+      setIsAuthenticated(true);
+      setLoading(false);
+      return true;
+    } else {
+      setError("Senha incorreta.");
+      setLoading(false);
+      return false;
     }
-  }, [logoutMutation, utils]);
+  }, []);
 
-  const state = useMemo(() => {
-    localStorage.setItem(
-      "manus-runtime-user-info",
-      JSON.stringify(meQuery.data)
-    );
-    return {
-      user: meQuery.data ?? null,
-      loading: meQuery.isLoading || logoutMutation.isPending,
-      error: meQuery.error ?? logoutMutation.error ?? null,
-      isAuthenticated: Boolean(meQuery.data),
-    };
-  }, [
-    meQuery.data,
-    meQuery.error,
-    meQuery.isLoading,
-    logoutMutation.error,
-    logoutMutation.isPending,
-  ]);
+  const logout = useCallback(() => {
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    setIsAuthenticated(false);
+  }, []);
 
+  // Redirecionamento para a página de login se não estiver autenticado
   useEffect(() => {
-    if (!redirectOnUnauthenticated) return;
-    if (meQuery.isLoading || logoutMutation.isPending) return;
-    if (state.user) return;
     if (typeof window === "undefined") return;
-    if (window.location.pathname === redirectPath) return;
+    
+    const isLoginPage = window.location.pathname === getLoginUrl();
+    const isAdminRoute = window.location.pathname.startsWith("/admin");
 
-    window.location.href = redirectPath
-  }, [
-    redirectOnUnauthenticated,
-    redirectPath,
-    logoutMutation.isPending,
-    meQuery.isLoading,
-    state.user,
-  ]);
+    if (isAdminRoute && !isAuthenticated && !isLoginPage) {
+      window.location.href = getLoginUrl();
+    }
+  }, [isAuthenticated]);
 
   return {
-    ...state,
-    refresh: () => meQuery.refetch(),
+    user: isAuthenticated ? { role: "admin" } : null, // Simula um objeto de usuário
+    loading,
+    error,
+    isAuthenticated,
+    login,
     logout,
+    refresh: () => {}, // Não faz nada na autenticação simples
   };
 }

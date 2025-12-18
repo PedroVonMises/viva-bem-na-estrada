@@ -20,20 +20,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { trpc } from "@/lib/trpc";
+import { adminGetVideos, adminDeleteVideo, adminGetStats } from "@shared/data";
 import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff, Clock } from "lucide-react";
 import { Link } from "wouter";
 import { toast } from "sonner";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function AdminVideos() {
-  const utils = trpc.useUtils();
-  const { data: videos, isLoading } = trpc.admin.videos.list.useQuery();
+  const queryClient = useQueryClient();
+  const { data: videos, isLoading } = useQuery({ queryKey: ["adminVideos"], queryFn: adminGetVideos });
   
-  const deleteMutation = trpc.admin.videos.delete.useMutation({
+  const deleteMutation = useMutation({ mutationFn: adminDeleteVideo,
     onSuccess: () => {
       toast.success("Vídeo excluído com sucesso!");
-      utils.admin.videos.list.invalidate();
-      utils.admin.stats.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["adminVideos"] });
+      queryClient.invalidateQueries({ queryKey: ["adminStats"] });
     },
     onError: () => {
       toast.error("Erro ao excluir vídeo");
@@ -152,7 +153,7 @@ export default function AdminVideos() {
                                   Cancelar
                                 </AlertDialogCancel>
                                 <AlertDialogAction
-                                  onClick={() => deleteMutation.mutate({ id: video.id })}
+                                  onClick={() => deleteMutation.mutate(video.id)}
                                   className="bg-red-500 hover:bg-red-600"
                                 >
                                   Excluir

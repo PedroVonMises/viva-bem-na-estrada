@@ -1,12 +1,13 @@
 import Layout from "@/components/Layout";
 import { Play, Calendar, Clock, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { getVideos } from "@shared/data";
 
 export default function VivaBem() {
   // Buscar vídeos do banco de dados
-  const { data: latestVideo, isLoading: loadingLatest, error: errorLatest } = trpc.videos.latest.useQuery();
-  const { data: allVideos, isLoading: loadingAll } = trpc.videos.list.useQuery({ limit: 4 });
+  const { data: latestVideo, isLoading: loadingLatest, error: errorLatest } = useQuery({ queryKey: ["latestVideo"], queryFn: () => getVideos().then(videos => videos[0]) });
+  const { data: allVideos, isLoading: loadingAll } = useQuery({ queryKey: ["allVideos"], queryFn: () => getVideos().then(videos => videos.slice(0, 4)) });
 
   // Filtrar vídeos anteriores (excluindo o mais recente)
   const previousEpisodes = allVideos?.filter(v => v.id !== latestVideo?.id).slice(0, 3) || [];

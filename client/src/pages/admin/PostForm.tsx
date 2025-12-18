@@ -5,11 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { trpc } from "@/lib/trpc";
+import { adminGetPostById, adminCreatePost, adminUpdatePost, adminGetStats } from "@shared/data";
 import { ArrowLeft, Loader2, Save } from "lucide-react";
 import { Link, useParams, useLocation } from "wouter";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { InsertPost } from "../../../drizzle/schema";
 
 export default function PostForm() {
   const params = useParams<{ id: string }>();
@@ -29,12 +31,9 @@ export default function PostForm() {
     featured: false,
   });
 
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
   
-  const { data: post, isLoading: loadingPost } = trpc.admin.posts.byId.useQuery(
-    { id: postId! },
-    { enabled: !!postId }
-  );
+  const { data: post, isLoading: loadingPost } = useQuery({ queryKey: ["adminPost", postId], queryFn: () => adminGetPostById(postId!), enabled: !!postId });
 
   useEffect(() => {
     if (post) {
@@ -52,11 +51,11 @@ export default function PostForm() {
     }
   }, [post]);
 
-  const createMutation = trpc.admin.posts.create.useMutation({
+  const createMutation = useMutation({ mutationFn: (data: InsertPost) => adminCreatePost(data),
     onSuccess: () => {
       toast.success("Post criado com sucesso!");
-      utils.admin.posts.list.invalidate();
-      utils.admin.stats.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["adminPosts"] });
+      queryClient.invalidateQueries({ queryKey: ["adminStats"] });
       setLocation("/admin/posts");
     },
     onError: (error) => {
@@ -64,10 +63,10 @@ export default function PostForm() {
     }
   });
 
-  const updateMutation = trpc.admin.posts.update.useMutation({
+  const updateMutation = useMutation({ mutationFn: (data: { id: number, post: Partial<InsertPost> }) => adminUpdatePost(data.id, data.post),
     onSuccess: () => {
       toast.success("Post atualizado com sucesso!");
-      utils.admin.posts.list.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["adminPosts"] });
       setLocation("/admin/posts");
     },
     onError: (error) => {
@@ -96,9 +95,9 @@ export default function PostForm() {
     e.preventDefault();
     
     if (isEditing && postId) {
-      updateMutation.mutate({ id: postId, data: formData });
+      updateMutation.mutate({ id: postId, post: formData });
     } else {
-      createMutation.mutate(formData);
+      createMutation.mutate(formData as InsertPost);
     }
   };
 

@@ -20,19 +20,20 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { trpc } from "@/lib/trpc";
+import { adminGetSubscribers, adminDeleteSubscriber, adminGetStats } from "@shared/data";
 import { Trash2, Loader2, Mail, Download, Users } from "lucide-react";
 import { toast } from "sonner";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function AdminNewsletter() {
-  const utils = trpc.useUtils();
-  const { data: subscribers, isLoading } = trpc.admin.subscribers.list.useQuery();
+  const queryClient = useQueryClient();
+  const { data: subscribers, isLoading } = useQuery({ queryKey: ["adminSubscribers"], queryFn: adminGetSubscribers });
   
-  const deleteMutation = trpc.admin.subscribers.delete.useMutation({
+  const deleteMutation = useMutation({ mutationFn: adminDeleteSubscriber,
     onSuccess: () => {
       toast.success("Inscrito removido com sucesso!");
-      utils.admin.subscribers.list.invalidate();
-      utils.admin.stats.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["adminSubscribers"] });
+      queryClient.invalidateQueries({ queryKey: ["adminStats"] });
     },
     onError: () => {
       toast.error("Erro ao remover inscrito");
@@ -181,7 +182,7 @@ export default function AdminNewsletter() {
                                 Cancelar
                               </AlertDialogCancel>
                               <AlertDialogAction
-                                onClick={() => deleteMutation.mutate({ id: subscriber.id })}
+                                onClick={() => deleteMutation.mutate(subscriber.id)}
                                 className="bg-red-500 hover:bg-red-600"
                               >
                                 Remover

@@ -20,20 +20,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { trpc } from "@/lib/trpc";
+import { adminGetPosts, adminDeletePost, adminGetStats } from "@shared/data";
 import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff } from "lucide-react";
 import { Link } from "wouter";
 import { toast } from "sonner";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function AdminPosts() {
-  const utils = trpc.useUtils();
-  const { data: posts, isLoading } = trpc.admin.posts.list.useQuery();
+  const queryClient = useQueryClient();
+  const { data: posts, isLoading } = useQuery({ queryKey: ["adminPosts"], queryFn: adminGetPosts });
   
-  const deleteMutation = trpc.admin.posts.delete.useMutation({
+  const deleteMutation = useMutation({ mutationFn: adminDeletePost,
     onSuccess: () => {
       toast.success("Post excluído com sucesso!");
-      utils.admin.posts.list.invalidate();
-      utils.admin.stats.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["adminPosts"] });
+      queryClient.invalidateQueries({ queryKey: ["adminStats"] });
     },
     onError: () => {
       toast.error("Erro ao excluir post");
@@ -152,7 +153,7 @@ export default function AdminPosts() {
                                   Cancelar
                                 </AlertDialogCancel>
                                 <AlertDialogAction
-                                  onClick={() => deleteMutation.mutate({ id: post.id })}
+                                  onClick={() => deleteMutation.mutate(post.id)}
                                   className="bg-red-500 hover:bg-red-600"
                                 >
                                   Excluir

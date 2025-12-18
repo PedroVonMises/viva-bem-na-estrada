@@ -20,20 +20,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { trpc } from "@/lib/trpc";
+import { adminGetEbooks, adminDeleteEbook, adminGetStats } from "@shared/data";
 import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff, FileText } from "lucide-react";
 import { Link } from "wouter";
 import { toast } from "sonner";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function AdminEbooks() {
-  const utils = trpc.useUtils();
-  const { data: ebooks, isLoading } = trpc.admin.ebooks.list.useQuery();
+  const queryClient = useQueryClient();
+  const { data: ebooks, isLoading } = useQuery({ queryKey: ["adminEbooks"], queryFn: adminGetEbooks });
   
-  const deleteMutation = trpc.admin.ebooks.delete.useMutation({
+  const deleteMutation = useMutation({ mutationFn: adminDeleteEbook,
     onSuccess: () => {
       toast.success("Ebook excluído com sucesso!");
-      utils.admin.ebooks.list.invalidate();
-      utils.admin.stats.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["adminEbooks"] });
+      queryClient.invalidateQueries({ queryKey: ["adminStats"] });
     },
     onError: () => {
       toast.error("Erro ao excluir ebook");
@@ -152,7 +153,7 @@ export default function AdminEbooks() {
                                   Cancelar
                                 </AlertDialogCancel>
                                 <AlertDialogAction
-                                  onClick={() => deleteMutation.mutate({ id: ebook.id })}
+                                  onClick={() => deleteMutation.mutate(ebook.id)}
                                   className="bg-red-500 hover:bg-red-600"
                                 >
                                   Excluir

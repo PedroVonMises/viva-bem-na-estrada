@@ -5,11 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { trpc } from "@/lib/trpc";
+import { adminGetVideoById, adminCreateVideo, adminUpdateVideo, adminGetStats } from "@shared/data";
 import { ArrowLeft, Loader2, Save } from "lucide-react";
 import { Link, useParams, useLocation } from "wouter";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { InsertVideo } from "../../../drizzle/schema";
 
 export default function VideoForm() {
   const params = useParams<{ id: string }>();
@@ -27,12 +29,9 @@ export default function VideoForm() {
     featured: false,
   });
 
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
   
-  const { data: video, isLoading: loadingVideo } = trpc.admin.videos.byId.useQuery(
-    { id: videoId! },
-    { enabled: !!videoId }
-  );
+  const { data: video, isLoading: loadingVideo } = useQuery({ queryKey: ["adminVideo", videoId], queryFn: () => adminGetVideoById(videoId!), enabled: !!videoId });
 
   useEffect(() => {
     if (video) {
@@ -48,11 +47,11 @@ export default function VideoForm() {
     }
   }, [video]);
 
-  const createMutation = trpc.admin.videos.create.useMutation({
+  const createMutation = useMutation({ mutationFn: (data: InsertVideo) => adminCreateVideo(data),
     onSuccess: () => {
       toast.success("Vídeo criado com sucesso!");
-      utils.admin.videos.list.invalidate();
-      utils.admin.stats.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["adminVideos"] });
+      queryClient.invalidateQueries({ queryKey: ["adminStats"] });
       setLocation("/admin/videos");
     },
     onError: (error) => {
@@ -60,10 +59,10 @@ export default function VideoForm() {
     }
   });
 
-  const updateMutation = trpc.admin.videos.update.useMutation({
+  const updateMutation = useMutation({ mutationFn: (data: { id: number, video: Partial<InsertVideo> }) => adminUpdateVideo(data.id, data.video),
     onSuccess: () => {
       toast.success("Vídeo atualizado com sucesso!");
-      utils.admin.videos.list.invalidate();
+      queryClient.invalidateQueries({ queryKey: ["adminVideos"] });
       setLocation("/admin/videos");
     },
     onError: (error) => {
@@ -75,9 +74,9 @@ export default function VideoForm() {
     e.preventDefault();
     
     if (isEditing && videoId) {
-      updateMutation.mutate({ id: videoId, data: formData });
+      updateMutation.mutate({ id: videoId, video: formData });
     } else {
-      createMutation.mutate(formData);
+      createMutation.mutate(formData as InsertVideo);
     }
   };
 

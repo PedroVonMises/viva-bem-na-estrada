@@ -2,12 +2,13 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Download, BookOpen, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { getEbooks } from "@shared/data";
 import { toast } from "sonner";
 
 export default function Ebooks() {
   // Buscar ebooks do banco de dados
-  const { data: ebooks, isLoading } = trpc.ebooks.list.useQuery();
+  const { data: ebooks, isLoading } = useQuery({ queryKey: ["ebooks"], queryFn: getEbooks });
 
   const handleDownload = (title: string, downloadUrl: string | null) => {
     if (downloadUrl) {

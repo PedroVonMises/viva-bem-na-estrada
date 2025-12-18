@@ -1,29 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean } from "drizzle-orm/mysql-core";
-
-/**
- * Core user table backing auth flow.
- * Extend this file with additional tables as your product grows.
- * Columns use camelCase to match both database fields and generated types.
- */
-export const users = mysqlTable("users", {
-  /**
-   * Surrogate primary key. Auto-incremented numeric value managed by the database.
-   * Use this for relations between tables.
-   */
-  id: int("id").autoincrement().primaryKey(),
-  /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
-  openId: varchar("openId", { length: 64 }).notNull().unique(),
-  name: text("name"),
-  email: varchar("email", { length: 320 }),
-  loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-  lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
-});
-
-export type User = typeof users.$inferSelect;
-export type InsertUser = typeof users.$inferInsert;
+import { pgTable, serial, text, varchar, boolean, timestamp } from "drizzle-orm/pg-core";
 
 // ========================================
 // TABELAS DO BLOG VIVA BEM NA ESTRADA
@@ -32,8 +7,8 @@ export type InsertUser = typeof users.$inferInsert;
 /**
  * Tabela de Posts/Artigos do Blog
  */
-export const posts = mysqlTable("posts", {
-  id: int("id").autoincrement().primaryKey(),
+export const posts = pgTable("posts", {
+  id: serial("id").primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   excerpt: text("excerpt").notNull(),
@@ -44,7 +19,7 @@ export const posts = mysqlTable("posts", {
   published: boolean("published").default(true).notNull(),
   featured: boolean("featured").default(false).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type Post = typeof posts.$inferSelect;
@@ -53,8 +28,8 @@ export type InsertPost = typeof posts.$inferInsert;
 /**
  * Tabela de Vídeos do Canal
  */
-export const videos = mysqlTable("videos", {
-  id: int("id").autoincrement().primaryKey(),
+export const videos = pgTable("videos", {
+  id: serial("id").primaryKey(),
   youtubeId: varchar("youtubeId", { length: 50 }),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
@@ -63,7 +38,7 @@ export const videos = mysqlTable("videos", {
   published: boolean("published").default(true).notNull(),
   featured: boolean("featured").default(false).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type Video = typeof videos.$inferSelect;
@@ -72,16 +47,16 @@ export type InsertVideo = typeof videos.$inferInsert;
 /**
  * Tabela de Ebooks/Materiais Ricos
  */
-export const ebooks = mysqlTable("ebooks", {
-  id: int("id").autoincrement().primaryKey(),
+export const ebooks = pgTable("ebooks", {
+  id: serial("id").primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description").notNull(),
   image: varchar("image", { length: 512 }).notNull(),
   downloadUrl: varchar("downloadUrl", { length: 512 }),
-  pages: int("pages").notNull(),
+  pages: serial("pages").notNull(), // Alterado para serial, assumindo que é um contador
   published: boolean("published").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type Ebook = typeof ebooks.$inferSelect;
@@ -90,13 +65,13 @@ export type InsertEbook = typeof ebooks.$inferInsert;
 /**
  * Tabela de Inscritos na Newsletter
  */
-export const newsletterSubscribers = mysqlTable("newsletter_subscribers", {
-  id: int("id").autoincrement().primaryKey(),
+export const newsletterSubscribers = pgTable("newsletter_subscribers", {
+  id: serial("id").primaryKey(),
   email: varchar("email", { length: 320 }).notNull().unique(),
   name: varchar("name", { length: 255 }),
   active: boolean("active").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
