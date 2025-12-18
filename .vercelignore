@@ -4,7 +4,6 @@ server
 .env
 .git
 .gitignore
-patches
 ideas.md
 todo.md
 vitest.config.ts
