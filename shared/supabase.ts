@@ -1,22 +1,26 @@
 import { createClient } from "@supabase/supabase-js";
 
-// A chave anon é segura para ser exposta no frontend
-const supabaseUrl = import.meta.env.VITE_NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+// Use apenas import.meta.env para o frontend Vite
+const supabaseUrl = import.meta.env.VITE_NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error("Missing Supabase URL or Anon Key");
+  // Isso ajuda a depurar: se aparecer no console do navegador, você sabe o que falta.
+  console.error("Erro Crítico: Variáveis de ambiente do Supabase não encontradas.");
+  // Não lançar erro aqui pode permitir que a UI de erro apareça, em vez de tela branca total
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl || "", supabaseAnonKey || "");
 
-// Função para criar um cliente Supabase com a chave de Service Role (para uso em APIs/Serverless Functions)
+// Mantenha o process.env APENAS para o cliente de servidor (se usado em Node.js/API routes)
 export const createServiceRoleClient = () => {
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  // Verifica se process existe antes de acessar (segurança para não quebrar no browser)
+  const serviceRoleKey = typeof process !== "undefined" ? process.env.SUPABASE_SERVICE_ROLE_KEY : undefined;
+  
   if (!serviceRoleKey) {
     throw new Error("Missing Supabase Service Role Key");
   }
-  return createClient(supabaseUrl, serviceRoleKey, {
+  return createClient(supabaseUrl || "", serviceRoleKey, {
     auth: {
       persistSession: false,
     },
