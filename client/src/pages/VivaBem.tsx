@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { Play, Calendar, Clock, AlertCircle, Loader2 } from "lucide-react";
+import { Play, Calendar, Clock, AlertCircle, Loader2, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { getVideos } from "@shared/data";
@@ -11,7 +11,11 @@ export default function VivaBem() {
 
   // Filtrar vídeos anteriores (excluindo o mais recente)
   const previousEpisodes = allVideos?.filter(v => v.id !== latestVideo?.id).slice(0, 3) || [];
-
+  // Helper para URL do Youtube
+  const getYoutubeUrl = (videoId?: string | null) => {
+    if (!videoId) return "#";
+    return `https://www.youtube.com/watch?v=${videoId}`;
+  };
   // Formatar data para exibição
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString('pt-BR', {
@@ -62,38 +66,45 @@ export default function VivaBem() {
           ) : (
             // Success State
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2">
-                <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl group cursor-pointer border border-slate-800">
-                  <img 
-                    src={latestVideo.thumbnail} 
-                    alt={latestVideo.title} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                    <div className="w-20 h-20 bg-primary/90 rounded-full flex items-center justify-center pl-2 shadow-[0_0_30px_rgba(234,88,12,0.5)] group-hover:scale-110 transition-transform duration-300">
-                      <Play className="h-8 w-8 text-white fill-white" />
+                <a 
+                  href={getYoutubeUrl(latestVideo.youtubeId)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block group"
+                >
+                  <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-800">
+                    <img 
+                      src={latestVideo.thumbnail} 
+                      alt={latestVideo.title} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                      <div className="w-20 h-20 bg-primary/90 rounded-full flex items-center justify-center pl-2 shadow-[0_0_30px_rgba(234,88,12,0.5)] group-hover:scale-110 transition-transform duration-300">
+                        <Play className="h-8 w-8 text-white fill-white" />
+                      </div>
+                    </div>
+                    <div className="absolute bottom-4 right-4 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">
+                      {latestVideo.duration}
                     </div>
                   </div>
-                  <div className="absolute bottom-4 right-4 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">
-                    {latestVideo.duration}
-                  </div>
-                </div>
-                
-                <div className="mt-8">
-                  <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
-                    <div className="flex items-center gap-1">
-                      <Calendar size={16} className="text-primary" />
-                      <span>{formatDate(latestVideo.createdAt)}</span>
+                  
+                  <div className="mt-8">
+                    <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
+                      <div className="flex items-center gap-1">
+                        <Calendar size={16} className="text-primary" />
+                        <span>{formatDate(latestVideo.createdAt)}</span>
+                      </div>
+                      <span className="w-1 h-1 bg-slate-600 rounded-full"></span>
+                      <span className="flex items-center gap-1 text-red-500 font-bold bg-red-500/10 px-2 py-0.5 rounded-full text-xs">
+                        Assistir no YouTube <ExternalLink size={12} />
+                      </span>
                     </div>
-                    <span className="w-1 h-1 bg-slate-600 rounded-full"></span>
-                    <span className="text-primary font-bold">Episódio Novo</span>
+                    <h2 className="text-3xl font-bold text-white mb-4 group-hover:text-primary transition-colors">{latestVideo.title}</h2>
+                    <p className="text-slate-300 leading-relaxed text-lg">
+                      {latestVideo.description}
+                    </p>
                   </div>
-                  <h2 className="text-3xl font-bold text-white mb-4">{latestVideo.title}</h2>
-                  <p className="text-slate-300 leading-relaxed text-lg">
-                    {latestVideo.description}
-                  </p>
-                </div>
-              </div>
+                </a>
 
               {/* Sidebar List */}
               <div className="lg:col-span-1">
@@ -103,7 +114,13 @@ export default function VivaBem() {
                 </h3>
                 <div className="flex flex-col gap-4">
                   {previousEpisodes.map((video) => (
-                    <div key={video.id} className="flex gap-4 group cursor-pointer p-3 rounded-xl hover:bg-slate-900 transition-colors">
+                    <a
+                      key={video.id}
+                      href={getYoutubeUrl(video.youtubeId)}
+                      target="_blank"
+                      rel="noopener noreferrer" 
+                      className="flex gap-4 group cursor-pointer p-3 rounded-xl hover:bg-slate-900 transition-colors"
+                    >
                       <div className="relative w-32 h-20 rounded-lg overflow-hidden flex-shrink-0">
                         <img 
                           src={video.thumbnail} 
@@ -121,7 +138,7 @@ export default function VivaBem() {
                         </h4>
                         <span className="text-slate-500 text-xs">{formatDate(video.createdAt)}</span>
                       </div>
-                    </div>
+                    </a>
                   ))}
                   
                   <Button variant="outline" className="w-full mt-4 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800">
