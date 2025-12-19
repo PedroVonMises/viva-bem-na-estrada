@@ -112,7 +112,7 @@ export default function VivaBem() {
                     {latestVideo.description}
                   </p>
                 </div>
-              </div>
+              </div>)
 
               {/* Sidebar List */}
               <div className="lg:col-span-1">
@@ -147,7 +147,7 @@ export default function VivaBem() {
                         <span className="text-slate-500 text-xs">{formatDate(video.createdAt)}</span>
                       </div>
                     </a>
-                  ))}
+                  ))}}
                   
                   <Button variant="outline" className="w-full mt-4 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800">
                     Ver Canal Completo
@@ -155,9 +155,9 @@ export default function VivaBem() {
                 </div>
               </div>
             </div>
-          )}
+          )
         </div>
       </section>
     </Layout>
-  );
-}
+  ;
+
