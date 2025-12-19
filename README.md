@@ -69,7 +69,7 @@ viva-bem-na-estrada/
 ### Tabelas
 
 **posts**
-- id, title, excerpt, content, image, category, published_at, created_at, updated_at
+- id, title, excerpt, content, image, category, readTime, published_at, created_at, updated_at
 
 **videos**
 - id, title, youtube_id, thumbnail, duration, description, created_at, updated_at
