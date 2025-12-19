@@ -6,8 +6,15 @@ import { getVideos } from "@shared/data";
 
 export default function VivaBem() {
   // Buscar vídeos do banco de dados
-  const { data: latestVideo, isLoading: loadingLatest, error: errorLatest } = useQuery({ queryKey: ["latestVideo"], queryFn: () => getVideos().then(videos => videos[0]) });
-  const { data: allVideos, isLoading: loadingAll } = useQuery({ queryKey: ["allVideos"], queryFn: () => getVideos().then(videos => videos.slice(0, 4)) });
+  const { data: latestVideo, isLoading: loadingLatest, error: errorLatest } = useQuery({ 
+    queryKey: ["latestVideo"], 
+    queryFn: () => getVideos().then(videos => videos[0]) 
+  });
+  
+  const { data: allVideos, isLoading: loadingAll } = useQuery({ 
+    queryKey: ["allVideos"], 
+    queryFn: () => getVideos().then(videos => videos.slice(0, 4)) 
+  });
 
   // Filtrar vídeos anteriores (excluindo o mais recente)
   const previousEpisodes = allVideos?.filter(v => v.id !== latestVideo?.id).slice(0, 3) || [];
@@ -69,50 +76,49 @@ export default function VivaBem() {
             // Success State
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2">
-                {/* BLOCO DO PLAYER DE VÍDEO (IFRAME) */}
-                <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-800 bg-black">
-                  {latestVideo.youtubeId ? (
-                    <iframe
-                      className="w-full h-full"
-                      src={`https://www.youtube.com/embed/${latestVideo.youtubeId}`}
-                      title={latestVideo.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                    ></iframe>
-                  ) : (
-                    // Fallback caso não tenha ID
-                    <div className="relative w-full h-full">
-                         <img 
-                          src={latestVideo.thumbnail} 
-                          alt={latestVideo.title} 
-                          className="w-full h-full object-cover opacity-50"
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <p className="text-slate-400 font-medium">Vídeo indisponível</p>
-                        </div>
+                {/* VÍDEO DESTAQUE - REDIRECIONA PARA YOUTUBE */}
+                <a 
+                  href={getYoutubeUrl(latestVideo.youtubeId)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block group"
+                >
+                  <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-800">
+                    <img 
+                      src={latestVideo.thumbnail} 
+                      alt={latestVideo.title} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                      <div className="w-20 h-20 bg-primary/90 rounded-full flex items-center justify-center pl-2 shadow-[0_0_30px_rgba(234,88,12,0.5)] group-hover:scale-110 transition-transform duration-300">
+                        <Play className="h-8 w-8 text-white fill-white" />
+                      </div>
                     </div>
-                  )}
-                </div>
-                
-                {/* INFORMAÇÕES DO VÍDEO */}
-                <div className="mt-8">
-                  <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
-                    <div className="flex items-center gap-1">
-                      <Calendar size={16} className="text-primary" />
-                      <span>{formatDate(latestVideo.createdAt)}</span>
+                    <div className="absolute bottom-4 right-4 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">
+                      {latestVideo.duration}
                     </div>
-                    <span className="w-1 h-1 bg-slate-600 rounded-full"></span>
-                    <span className="flex items-center gap-1 text-red-500 font-bold bg-red-500/10 px-2 py-0.5 rounded-full text-xs">
-                      YouTube Oficial
-                    </span>
                   </div>
-                  <h2 className="text-3xl font-bold text-white mb-4">
-                    {latestVideo.title}
-                  </h2>
-                  <p className="text-slate-300 leading-relaxed text-lg">
-                    {latestVideo.description}
-                  </p>
-                </div>
+                  
+                  <div className="mt-8">
+                    <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
+                      <div className="flex items-center gap-1">
+                        <Calendar size={16} className="text-primary" />
+                        {/* Propriedade corrigida para createdAt */}
+                        <span>{formatDate(latestVideo.createdAt)}</span>
+                      </div>
+                      <span className="w-1 h-1 bg-slate-600 rounded-full"></span>
+                      <span className="flex items-center gap-1 text-red-500 font-bold bg-red-500/10 px-2 py-0.5 rounded-full text-xs">
+                        Assistir no YouTube <ExternalLink size={12} />
+                      </span>
+                    </div>
+                    <h2 className="text-3xl font-bold text-white mb-4 group-hover:text-primary transition-colors">
+                      {latestVideo.title}
+                    </h2>
+                    <p className="text-slate-300 leading-relaxed text-lg">
+                      {latestVideo.description}
+                    </p>
+                  </div>
+                </a>
               </div>
 
               {/* Sidebar List */}
@@ -145,6 +151,7 @@ export default function VivaBem() {
                         <h4 className="text-white font-medium text-sm line-clamp-2 group-hover:text-primary transition-colors mb-1">
                           {video.title}
                         </h4>
+                        {/* Propriedade corrigida para createdAt */}
                         <span className="text-slate-500 text-xs">{formatDate(video.createdAt)}</span>
                       </div>
                     </a>
