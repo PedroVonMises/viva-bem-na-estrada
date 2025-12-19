@@ -11,11 +11,13 @@ export default function VivaBem() {
 
   // Filtrar vídeos anteriores (excluindo o mais recente)
   const previousEpisodes = allVideos?.filter(v => v.id !== latestVideo?.id).slice(0, 3) || [];
+  
   // Helper para URL do Youtube
   const getYoutubeUrl = (videoId?: string | null) => {
     if (!videoId) return "#";
     return `https://www.youtube.com/watch?v=${videoId}`;
   };
+  
   // Formatar data para exibição
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString('pt-BR', {
@@ -65,7 +67,8 @@ export default function VivaBem() {
             </div>
           ) : (
             // Success State
-            <div className="lg:col-span-2">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2">
                 {/* BLOCO DO PLAYER DE VÍDEO (IFRAME) */}
                 <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-800 bg-black">
                   {latestVideo.youtubeId ? (
@@ -77,7 +80,7 @@ export default function VivaBem() {
                       allowFullScreen
                     ></iframe>
                   ) : (
-                    // Fallback caso não tenha ID (mostra apenas a thumbnail)
+                    // Fallback caso não tenha ID
                     <div className="relative w-full h-full">
                          <img 
                           src={latestVideo.thumbnail} 
@@ -96,9 +99,7 @@ export default function VivaBem() {
                   <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
                     <div className="flex items-center gap-1">
                       <Calendar size={16} className="text-primary" />
-                      {/* ATENÇÃO: Se você atualizou o banco para 'created_at', use .created_at aqui. 
-                          Se ainda não atualizou, mantenha .createdAt */}
-                      <span>{formatDate(latestVideo.created_at || latestVideo.createdAt)}</span>
+                      <span>{formatDate(latestVideo.createdAt)}</span>
                     </div>
                     <span className="w-1 h-1 bg-slate-600 rounded-full"></span>
                     <span className="flex items-center gap-1 text-red-500 font-bold bg-red-500/10 px-2 py-0.5 rounded-full text-xs">
@@ -149,9 +150,15 @@ export default function VivaBem() {
                     </a>
                   ))}
                   
-                  <Button variant="outline" className="w-full mt-4 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800">
-                    Ver Canal Completo
-                  </Button>
+                  <a 
+                    href="https://www.youtube.com/@vivabemnaestrada" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant="outline" className="w-full mt-4 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800">
+                      Ver Canal Completo
+                    </Button>
+                  </a>
                 </div>
               </div>
             </div>
