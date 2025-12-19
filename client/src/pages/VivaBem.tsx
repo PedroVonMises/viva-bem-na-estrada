@@ -19,15 +19,16 @@ export default function VivaBem() {
   // Filtrar vídeos anteriores (excluindo o mais recente)
   const previousEpisodes = allVideos?.filter(v => v.id !== latestVideo?.id).slice(0, 3) || [];
   
-  // Helper para URL do Youtube
-  const getYoutubeUrl = (videoId?: string | null) => {
-    if (!videoId) return "#";
-    return `https://www.youtube.com/watch?v=${videoId}`;
+  // Helper para URL do Youtube - Variável renomeada para youtubeId para evitar confusão
+  const getYoutubeUrl = (youtubeId?: string | null) => {
+    if (!youtubeId || youtubeId.trim() === "") return null;
+    return `https://www.youtube.com/watch?v=${youtubeId}`;
   };
   
   // Formatar data para exibição
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('pt-BR', {
+  const formatDate = (dateString?: string | Date) => {
+    if (!dateString) return "Data desconhecida";
+    return new Date(dateString).toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: 'short',
       year: 'numeric'
@@ -36,6 +37,9 @@ export default function VivaBem() {
 
   const loading = loadingLatest || loadingAll;
   const error = errorLatest;
+
+  // Variável para URL do destaque (usando a propriedade youtubeId correta)
+  const mainVideoUrl = latestVideo ? getYoutubeUrl(latestVideo.youtubeId) : null;
 
   return (
     <Layout>
@@ -76,49 +80,23 @@ export default function VivaBem() {
             // Success State
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2">
-                {/* VÍDEO DESTAQUE - REDIRECIONA PARA YOUTUBE */}
-                <a 
-                  href={getYoutubeUrl(latestVideo.youtubeId)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block group"
-                >
-                  <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-800">
-                    <img 
-                      src={latestVideo.thumbnail} 
-                      alt={latestVideo.title} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                      <div className="w-20 h-20 bg-primary/90 rounded-full flex items-center justify-center pl-2 shadow-[0_0_30px_rgba(234,88,12,0.5)] group-hover:scale-110 transition-transform duration-300">
-                        <Play className="h-8 w-8 text-white fill-white" />
-                      </div>
-                    </div>
-                    <div className="absolute bottom-4 right-4 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">
-                      {latestVideo.duration}
-                    </div>
+                {/* LÓGICA CONDICIONAL: 
+                   Usa mainVideoUrl gerada a partir de latestVideo.youtubeId
+                */}
+                {mainVideoUrl ? (
+                  <a 
+                    href={mainVideoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block group"
+                  >
+                    <VideoCardContent video={latestVideo} formatDate={formatDate} isLink={true} />
+                  </a>
+                ) : (
+                  <div className="block cursor-default opacity-90">
+                    <VideoCardContent video={latestVideo} formatDate={formatDate} isLink={false} />
                   </div>
-                  
-                  <div className="mt-8">
-                    <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
-                      <div className="flex items-center gap-1">
-                        <Calendar size={16} className="text-primary" />
-                        {/* Propriedade corrigida para createdAt */}
-                        <span>{formatDate(latestVideo.createdAt)}</span>
-                      </div>
-                      <span className="w-1 h-1 bg-slate-600 rounded-full"></span>
-                      <span className="flex items-center gap-1 text-red-500 font-bold bg-red-500/10 px-2 py-0.5 rounded-full text-xs">
-                        Assistir no YouTube <ExternalLink size={12} />
-                      </span>
-                    </div>
-                    <h2 className="text-3xl font-bold text-white mb-4 group-hover:text-primary transition-colors">
-                      {latestVideo.title}
-                    </h2>
-                    <p className="text-slate-300 leading-relaxed text-lg">
-                      {latestVideo.description}
-                    </p>
-                  </div>
-                </a>
+                )}
               </div>
 
               {/* Sidebar List */}
@@ -128,34 +106,25 @@ export default function VivaBem() {
                   Episódios Anteriores
                 </h3>
                 <div className="flex flex-col gap-4">
-                  {previousEpisodes.map((video) => (
-                    <a
-                      key={video.id}
-                      href={getYoutubeUrl(video.youtubeId)}
-                      target="_blank"
-                      rel="noopener noreferrer" 
-                      className="flex gap-4 group cursor-pointer p-3 rounded-xl hover:bg-slate-900 transition-colors"
-                    >
-                      <div className="relative w-32 h-20 rounded-lg overflow-hidden flex-shrink-0">
-                        <img 
-                          src={video.thumbnail} 
-                          alt={video.title} 
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                        <div className="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
-                          {video.duration}
-                        </div>
+                  {previousEpisodes.map((video) => {
+                    // Garante o uso de video.youtubeId
+                    const videoUrl = getYoutubeUrl(video.youtubeId);
+                    return videoUrl ? (
+                      <a
+                        key={video.id}
+                        href={videoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer" 
+                        className="flex gap-4 group cursor-pointer p-3 rounded-xl hover:bg-slate-900 transition-colors"
+                      >
+                        <SidebarItemContent video={video} formatDate={formatDate} />
+                      </a>
+                    ) : (
+                      <div key={video.id} className="flex gap-4 p-3 rounded-xl opacity-60 cursor-default">
+                         <SidebarItemContent video={video} formatDate={formatDate} />
                       </div>
-                      <div className="flex flex-col justify-center">
-                        <h4 className="text-white font-medium text-sm line-clamp-2 group-hover:text-primary transition-colors mb-1">
-                          {video.title}
-                        </h4>
-                        {/* Propriedade corrigida para createdAt */}
-                        <span className="text-slate-500 text-xs">{formatDate(video.createdAt)}</span>
-                      </div>
-                    </a>
-                  ))}
+                    );
+                  })}
                   
                   <a 
                     href="https://www.youtube.com/@vivabemnaestrada" 
@@ -173,5 +142,77 @@ export default function VivaBem() {
         </div>
       </section>
     </Layout>
+  );
+}
+
+// Componentes auxiliares
+
+function VideoCardContent({ video, formatDate, isLink }: { video: any, formatDate: any, isLink: boolean }) {
+  // Verifica se existe createdAt ou created_at
+  const dateValue = video.createdAt || video.created_at;
+
+  return (
+    <>
+      <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl border border-slate-800">
+        <img 
+          src={video.thumbnail} 
+          alt={video.title} 
+          className={`w-full h-full object-cover transition-transform duration-700 ${isLink ? 'group-hover:scale-105' : ''}`}
+        />
+        <div className={`absolute inset-0 bg-black/40 ${isLink ? 'group-hover:bg-black/30' : ''} transition-colors flex items-center justify-center`}>
+          <div className={`w-20 h-20 bg-primary/90 rounded-full flex items-center justify-center pl-2 shadow-[0_0_30px_rgba(234,88,12,0.5)] ${isLink ? 'group-hover:scale-110' : ''} transition-transform duration-300`}>
+            <Play className="h-8 w-8 text-white fill-white" />
+          </div>
+        </div>
+        <div className="absolute bottom-4 right-4 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">
+          {video.duration}
+        </div>
+      </div>
+      
+      <div className="mt-8">
+        <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
+          <div className="flex items-center gap-1">
+            <Calendar size={16} className="text-primary" />
+            <span>{formatDate(dateValue)}</span>
+          </div>
+          <span className="w-1 h-1 bg-slate-600 rounded-full"></span>
+          <span className={`flex items-center gap-1 font-bold px-2 py-0.5 rounded-full text-xs ${isLink ? 'text-red-500 bg-red-500/10' : 'text-slate-500 bg-slate-800'}`}>
+            {isLink ? <>Assistir no YouTube <ExternalLink size={12} /></> : "Indisponível"}
+          </span>
+        </div>
+        <h2 className={`text-3xl font-bold text-white mb-4 ${isLink ? 'group-hover:text-primary' : ''} transition-colors`}>
+          {video.title}
+        </h2>
+        <p className="text-slate-300 leading-relaxed text-lg">
+          {video.description}
+        </p>
+      </div>
+    </>
+  );
+}
+
+function SidebarItemContent({ video, formatDate }: { video: any, formatDate: any }) {
+  const dateValue = video.createdAt || video.created_at;
+
+  return (
+    <>
+      <div className="relative w-32 h-20 rounded-lg overflow-hidden flex-shrink-0">
+        <img 
+          src={video.thumbnail} 
+          alt={video.title} 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+        <div className="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+          {video.duration}
+        </div>
+      </div>
+      <div className="flex flex-col justify-center">
+        <h4 className="text-white font-medium text-sm line-clamp-2 group-hover:text-primary transition-colors mb-1">
+          {video.title}
+        </h4>
+        <span className="text-slate-500 text-xs">{formatDate(dateValue)}</span>
+      </div>
+    </>
   );
 }
