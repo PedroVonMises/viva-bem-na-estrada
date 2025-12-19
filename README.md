@@ -1,107 +1,55 @@
-# 🚛 Blog Viva Bem na Estrada - Versão Completa
+# 🚛 Blog Viva Bem na Estrada
 
-Portal do motorista profissional com informações, dicas e entretenimento para quem vive na estrada.
+**Viva Bem na Estrada** é uma plataforma moderna dedicada a fornecer informação, segurança e entretenimento para motoristas profissionais. O projeto foi desenvolvido como uma Single Page Application (SPA) de alta performance, totalmente responsiva e construída sobre uma arquitetura **Serverless**, garantindo escalabilidade e facilidade de manutenção.
 
 **🌐 Site oficial:** [https://vivabemnaestrada.com](https://vivabemnaestrada.com)
 
-## ⚠️ Aviso Importante
+![Status](https://img.shields.io/badge/Status-Em_Desenvolvimento-blue) ![License](https://img.shields.io/badge/License-MIT-green)
 
-Este é o código completo do projeto rodando no **Manus Platform**. Ele inclui:
-- ✅ Frontend React + Tailwind CSS
-- ✅ Backend Express + tRPC
-- ✅ Banco de dados MySQL com Drizzle ORM
-- ✅ Painel administrativo completo
-- ✅ Sistema de autenticação OAuth
-- ✅ CRUD para Posts, Vídeos e Ebooks
+## 🚀 Tecnologias e Arquitetura
 
-**Este código NÃO funcionará diretamente no Vercel ou outras plataformas serverless** sem adaptações significativas.
+Este projeto utiliza uma stack moderna focada em experiência do usuário (UX) e eficiência de desenvolvimento:
 
-## 🚀 Tecnologias
+### Frontend (Client)
+- **[React](https://react.dev/)**: Biblioteca UI principal.
+- **[Vite](https://vitejs.dev/)**: Build tool e ambiente de desenvolvimento ultrarrápido.
+- **[Tailwind CSS](https://tailwindcss.com/)**: Framework de estilização utility-first para design responsivo.
+- **[shadcn/ui](https://ui.shadcn.com/)**: Componentes de interface acessíveis e elegantes.
+- **[wouter](https://github.com/molefrog/wouter)**: Roteamento leve e minimalista.
+- **[TanStack Query](https://tanstack.com/query/latest)**: Gerenciamento de estado assíncrono e cache.
 
-### Frontend
-- **React 19** + **TypeScript**
-- **Vite** - Build tool
-- **Tailwind CSS 4** - Estilização
-- **Framer Motion** - Animações
-- **Wouter** - Roteamento
-- **tRPC** - Type-safe API client
+### Backend & Dados (Serverless)
+- **[Supabase](https://supabase.com/)**: Backend-as-a-Service (BaaS) para autenticação e banco de dados Postgres.
+- **[Drizzle ORM](https://orm.drizzle.team/)**: ORM TypeScript-first para interação segura com o banco de dados.
 
-### Backend
-- **Express** - Servidor HTTP
-- **tRPC** - API type-safe
-- **Drizzle ORM** - Database toolkit
-- **MySQL** - Banco de dados relacional
-- **Zod** - Validação de schemas
+## 🖼️ Design Responsivo
 
-## 📦 Instalação (Manus Platform)
+A aplicação foi projetada com o conceito *Mobile First*. O uso do Tailwind CSS permite que o layout se adapte fluidamente a qualquer tamanho de tela, garantindo acessibilidade tanto em smartphones (usados na estrada) quanto em desktops (painel administrativo).
 
-Este projeto foi desenvolvido para rodar na plataforma Manus. Para rodar localmente:
+## 📂 Estrutura do Projeto
 
-```bash
-# Instalar dependências
-pnpm install
-
-# Configurar banco de dados
-pnpm db:push
-
-# Popular banco com dados iniciais
-npx tsx server/seed.ts
-
-# Rodar em desenvolvimento
-pnpm dev
-
-# Build para produção
-pnpm build
-
-# Iniciar servidor de produção
-pnpm start
-```
-
-## 🗄️ Estrutura do Projeto
+A organização do código separa claramente as responsabilidades do frontend, código compartilhado e configuração de banco de dados:
 
 ```
 viva-bem-na-estrada/
-├── client/                    # Frontend React
-│   ├── public/
-│   │   ├── logo.png
-│   │   ├── favicon.png
-│   │   └── dellano.png
+├── client/                 # Aplicação Frontend (SPA)
+│   ├── public/             # Assets estáticos (logos, imagens)
 │   ├── src/
-│   │   ├── components/
-│   │   │   ├── Layout.tsx
-│   │   │   ├── AdminLayout.tsx
-│   │   │   └── PostCard.tsx
-│   │   ├── pages/
-│   │   │   ├── Home.tsx
-│   │   │   ├── VivaBem.tsx
-│   │   │   ├── About.tsx
-│   │   │   ├── Ebooks.tsx
-│   │   │   ├── Social.tsx
-│   │   │   └── admin/
-│   │   │       ├── Dashboard.tsx
-│   │   │       ├── Posts.tsx
-│   │   │       ├── Videos.tsx
-│   │   │       └── Ebooks.tsx
-│   │   ├── App.tsx
-│   │   ├── main.tsx
-│   │   └── index.css
-│   └── index.html
-├── server/                    # Backend Express + tRPC
-│   ├── _core/
-│   │   ├── trpc.ts
-│   │   └── context.ts
-│   ├── db.ts                  # Funções do banco de dados
-│   ├── routers.ts             # Rotas tRPC
-│   ├── seed.ts                # Script de seed
-│   └── index.ts               # Entry point do servidor
-├── shared/                    # Código compartilhado
-│   └── const.ts
-├── drizzle/                   # Migrations e schema
-│   └── schema.ts
-├── package.json
-└── README.md
+│   │   ├── _core/          # Lógica central e hooks de autenticação
+│   │   ├── components/     # Componentes React (UI e Funcionais)
+│   │   ├── contexts/       # Contextos globais (Tema, Auth)
+│   │   ├── hooks/          # Custom Hooks (useMobile, etc)
+│   │   ├── lib/            # Utilitários gerais
+│   │   ├── pages/          # Páginas (Home, Admin, Ebooks)
+│   │   ├── App.tsx         # Root component e Rotas
+│   │   └── main.tsx        # Entry point
+│   └── index.html          # Template HTML principal
+├── shared/                 # Código compartilhado (Types, Consts, Supabase Client)
+├── drizzle/                # Migrações SQL e Schemas do Banco
+├── tailwind.config.ts      # Configuração de estilos e temas
+├── vite.config.ts          # Configuração do Vite (Paths e Plugins)
+└── package.json            # Dependências e Scripts
 ```
-
 ## 🎨 Design System
 
 ### Cores
@@ -115,12 +63,6 @@ viva-bem-na-estrada/
 - **Hero:** 4xl-5xl, negrito
 - **Títulos:** 2xl-3xl, negrito
 - **Corpo:** base-lg, regular
-
-## 🔐 Autenticação
-
-O sistema usa OAuth do Manus Platform. O painel administrativo (`/admin`) requer:
-- Login via OAuth
-- Role de administrador (`role: "admin"`)
 
 ## 🗄️ Banco de Dados
 
@@ -137,34 +79,6 @@ O sistema usa OAuth do Manus Platform. O painel administrativo (`/admin`) requer
 
 **newsletter_subscribers**
 - id, email, subscribed_at
-
-## 🔧 Variáveis de Ambiente (Manus)
-
-Estas variáveis são injetadas automaticamente pela plataforma Manus:
-
-```env
-# OAuth
-OAUTH_SERVER_URL=<manus-oauth-url>
-OWNER_OPEN_ID=<owner-id>
-
-# JWT
-JWT_SECRET=<auto-generated>
-
-# App
-VITE_APP_ID=<app-id>
-VITE_APP_TITLE="Viva Bem na Estrada"
-VITE_APP_LOGO="/logo.png"
-
-# Analytics
-VITE_ANALYTICS_ENDPOINT=<manus-analytics>
-VITE_ANALYTICS_WEBSITE_ID=<website-id>
-
-# Forge API
-BUILT_IN_FORGE_API_KEY=<api-key>
-BUILT_IN_FORGE_API_URL=<api-url>
-VITE_FRONTEND_FORGE_API_KEY=<frontend-key>
-VITE_FRONTEND_FORGE_API_URL=<frontend-url>
-```
 
 ## 📱 Páginas
 
@@ -201,18 +115,15 @@ pnpm test server/content.test.ts
 pnpm test server/admin.test.ts
 ```
 
-## 🚀 Deploy (Manus Platform)
-
-1. Faça commit das mudanças
-2. Use `webdev_save_checkpoint` para criar checkpoint
-3. Clique em "Publish" no painel Manus
-4. O site será publicado automaticamente
-
 ## 📞 Contato
 
 - **Instagram:** [@vivabemnaestrada](https://instagram.com/vivabemnaestrada)
 - **YouTube:** [@vivabemnaestrada](https://youtube.com/@vivabemnaestrada)
 - **Facebook:** [Viva Bem na Estrada](https://facebook.com/profile.php?id=61580852677265)
+
+## ☁️ Deploy
+
+A aplicação está otimizada para deploy na **Vercel**. O arquivo ``vite.config.ts`` já está configurado para gerar os arquivos estáticos na pasta correta (dist) a partir da raiz.
 
 ## 📝 Licença
 
@@ -220,4 +131,4 @@ pnpm test server/admin.test.ts
 
 ---
 
-**Desenvolvido na Manus Platform** 🚀
+_Desenvolvido com ❤️ para quem vive na estrada por PedroVonMises. 🚀_
