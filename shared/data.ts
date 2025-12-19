@@ -66,7 +66,6 @@ export async function getEbooks(): Promise<Ebook[]> {
   const { data, error } = await supabase
     .from("ebooks")
     .select("*")
-    .eq("published", true)
     .order("createdAt", { ascending: false });
 
   if (error) {
