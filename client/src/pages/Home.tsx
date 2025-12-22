@@ -49,6 +49,32 @@ export default function Home() {
 
   return (
     <Layout>
+      {/* --- VÍDEO INTRO (FULLSCREEN OVERLAY) --- */}
+      {showIntroVideo && (
+        <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center backdrop-blur-md animate-in fade-in duration-500">
+          <button 
+            onClick={() => setShowIntroVideo(false)}
+            className="absolute top-6 right-6 z-50 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-all hover:scale-110"
+            title="Fechar vídeo"
+          >
+            <X className="w-8 h-8" />
+          </button>
+
+          <div className="w-full h-full max-w-[90vw] max-h-[90vh] flex items-center justify-center">
+            <AspectRatio ratio={16 / 9} className="w-full max-h-screen">
+              <iframe
+                // autoplay=1 e mute=1 são essenciais para funcionar automático
+                src="https://www.youtube.com/embed/Sid1Puxgymk?autoplay=1&mute=1&controls=1&modestbranding=1&rel=0&showinfo=0&si=T9FmyB2vqM1WaPgy" 
+                title="Vídeo Institucional Viva Bem na Estrada"
+                className="w-full h-full rounded-lg shadow-2xl border border-white/10"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </AspectRatio>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
       <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
         {/* Background Image with Overlay */}
@@ -75,36 +101,30 @@ export default function Home() {
             <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight tracking-tight">
               Informação que <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-400">Viaja com Você</span>
             </h1>
-            {/* Vídeo Intro Fullscreen Overlay */}
-            {showIntroVideo && (
-              <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center backdrop-blur-md animate-in fade-in duration-500">
-                
-                {/* Botão Fechar (Essencial para UX) */}
-                <button 
-                  onClick={() => setShowIntroVideo(false)}
-                  className="absolute top-6 right-6 z-50 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-all hover:scale-110"
-                  title="Fechar vídeo"
-                >
-                  <X className="w-8 h-8" />
-                </button>
+            
+            {/* Vídeo Inline (Fica na página após fechar o intro) */}
+            <div className="w-full max-w-3xl mx-auto mb-10 rounded-xl overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.5)] border border-slate-700/50 bg-slate-950">
+              <AspectRatio ratio={16 / 9}>
+                <iframe
+                  src="https://www.youtube.com/embed/Sid1Puxgymk?si=T9FmyB2vqM1WaPgy" 
+                  title="Vídeo Institucional Viva Bem na Estrada"
+                  className="w-full h-full object-cover"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </AspectRatio>
+            </div>
 
-                <div className="w-full h-full max-w-[90vw] max-h-[90vh] flex items-center justify-center">
-                  <AspectRatio ratio={16 / 9} className="w-full max-h-screen">
-                    <iframe
-                      // PARÂMETROS CRICIAIS ADICIONADOS:
-                      // autoplay=1 -> Inicia automaticamente
-                      // mute=1 -> Obrigatório para o autoplay funcionar em Chrome/Safari
-                      // controls=0 -> Esconde a barra do player para ficar mais "cinema"
-                      src="https://www.youtube.com/embed/Sid1Puxgymk?si=ScXxDSv_zltpJAdg?autoplay=1&mute=1&controls=1&modestbranding=1&rel=0&showinfo=0" 
-                      title="Vídeo Institucional Viva Bem na Estrada"
-                      className="w-full h-full rounded-lg shadow-2xl border border-white/10"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </AspectRatio>
-                </div>
-              </div>
-            )}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button className="bg-primary hover:bg-primary/90 text-white text-lg px-8 py-6 rounded-lg font-bold shadow-[0_0_20px_rgba(234,88,12,0.4)] transition-all hover:scale-105">
+                Baixe nossos Ebooks
+              </Button>
+              <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-800 hover:text-white text-lg px-8 py-6 rounded-lg font-bold backdrop-blur-sm transition-all">
+                Ver Últimos Artigos
+              </Button>
+            </div>
+          </motion.div>
+        </div>
       </section>
 
       {/* Featured Posts Section */}
