@@ -26,10 +26,10 @@ export default function Home() {
 
       }
     },
-    onError: () => {
-      toast.error("Erro ao realizar inscrição. Tente novamente.");
-    }
-  });
+onError: (error: Error) => {
+    toast.error(error.message || "Erro ao realizar inscrição. Tente novamente.");
+  }
+});
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
