@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Layout from "@/components/Layout";
 import PostCard from "@/components/PostCard";
 import { ArrowRight, Mail, Loader2 } from "lucide-react";
@@ -73,9 +74,18 @@ export default function Home() {
             <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight tracking-tight">
               Informação que <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-orange-400">Viaja com Você</span>
             </h1>
-            <p className="text-lg md:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Conteúdo especializado, dicas de manutenção, rotas seguras e as últimas novidades do setor de transporte. Tudo pensado para quem vive na estrada.
-            </p>
+            {/* Substituição do texto pelo Vídeo */}
+            <div className="w-full max-w-3xl mx-auto mb-10 rounded-xl overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.5)] border border-slate-700/50 bg-slate-950">
+              <AspectRatio ratio={16 / 9}>
+                <iframe
+                  src="https://www.youtube.com/embed/Sid1Puxgymk?si=T9FmyB2vqM1WaPgy" 
+                  title="Vídeo Institucional Viva Bem na Estrada"
+                  className="w-full h-full object-cover"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </AspectRatio>
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button className="bg-primary hover:bg-primary/90 text-white text-lg px-8 py-6 rounded-lg font-bold shadow-[0_0_20px_rgba(234,88,12,0.4)] transition-all hover:scale-105">
                 Baixe nossos Ebooks
