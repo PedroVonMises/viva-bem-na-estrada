@@ -177,7 +177,7 @@ export default function Home() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-20 bg-slate-900 border-y border-slate-800 relative overflow-hidden">
+      <section id="newsletter" className="py-20 bg-slate-900 border-y border-slate-800 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
           <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-primary to-transparent" />
         </div>

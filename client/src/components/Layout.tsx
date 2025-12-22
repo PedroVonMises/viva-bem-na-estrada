@@ -69,7 +69,15 @@ export default function Layout({ children }: LayoutProps) {
                 {link.name}
               </Link>
             ))}
-            <Button className="bg-primary hover:bg-primary/90 text-white font-bold shadow-[0_0_15px_rgba(234,88,12,0.3)]">
+            <Button 
+            onClick={() => {
+              if (window.location.pathname === '/') {
+                document.getElementById('newsletter')?.scrollIntoView({ behavior: 'smooth' });
+              } else {
+                window.location.href = '/#newsletter';
+              }
+            }}
+            className="bg-primary hover:bg-primary/90 text-white font-bold shadow-[0_0_15px_rgba(234,88,12,0.3)]">
               Inscreva-se
             </Button>
           </nav>
