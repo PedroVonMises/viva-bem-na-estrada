@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Layout from "@/components/Layout";
 import PostCard from "@/components/PostCard";
-import { ArrowRight, Mail, Loader2 } from "lucide-react";
+import { ArrowRight, Mail, Loader2, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getPosts, subscribeToNewsletter } from "@shared/data";
@@ -10,6 +10,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function Home() {
+  const [showIntroVideo, setShowIntroVideo] = useState(true);
   const [email, setEmail] = useState("");
   
   // Buscar posts do banco de dados
