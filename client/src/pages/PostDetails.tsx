@@ -95,32 +95,49 @@ export default function PostDetails() {
   return (
     <Layout>
       {/* Hero Section com Imagem */}
-      <div className="relative h-[50vh] min-h-[400px] w-full overflow-hidden">
-        <div className="absolute inset-0 bg-slate-950/60 z-10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent z-10" />
-        <img src={post.image} alt={post.title} className="h-full w-full object-cover" />
+      <div className="relative h-[60vh] min-h-[500px] w-full overflow-hidden">
+        {/* Camadas de fundo (Overlay) */}
+        <div className="absolute inset-0 bg-slate-950/70 z-10" /> 
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent z-10" />
         
-        <div className="container relative z-20 h-full flex flex-col justify-end pb-12">
-          <Link href="/artigos"> {/* Voltar para a lista de artigos agora */}
-            <Button variant="ghost" className="text-slate-300 hover:text-white mb-6 pl-0 hover:bg-transparent">
+        {/* Imagem de fundo */}
+        <img 
+            src={post.image} 
+            alt={post.title} 
+            className="h-full w-full object-cover" 
+        />
+        
+        {/* Conteúdo Centralizado */}
+        <div className="absolute inset-0 z-20 container flex flex-col items-center justify-end pb-16">
+          
+          {/* Botão de Voltar (Centralizado no topo da área de conteúdo ou acima do título) */}
+          <Link href="/artigos">
+            <Button variant="ghost" className="text-slate-300 hover:text-white mb-8 hover:bg-white/10">
               <ArrowLeft className="mr-2 h-4 w-4" /> Voltar para Artigos
             </Button>
           </Link>
           
-          <div className="space-y-4 max-w-4xl">
-            <Badge className="bg-primary hover:bg-primary/90 text-white border-none px-4 py-1 text-sm uppercase tracking-wider">
+          {/* Wrapper do Texto (Centralizado) */}
+          <div className="space-y-6 max-w-5xl mx-auto text-center flex flex-col items-center">
+            
+            {/* Categoria */}
+            <Badge className="bg-primary hover:bg-primary/90 text-white border-none px-6 py-1.5 text-base uppercase tracking-wider mb-2">
               {post.category}
             </Badge>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight">
+
+            {/* TÍTULO DA CÉLULA 'TITLE' DO SUPABASE - AGORA GIGANTE E CENTRALIZADO */}
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight drop-shadow-lg">
               {post.title}
             </h1>
-            <div className="flex items-center gap-6 text-slate-300 text-sm md:text-base">
+
+            {/* Metadados (Data e Tempo) */}
+            <div className="flex items-center justify-center gap-8 text-slate-200 text-base md:text-lg font-medium">
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-primary" />
+                <Calendar className="h-5 w-5 text-primary" />
                 <span>{new Date(post.createdAt).toLocaleDateString('pt-BR')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-primary" />
+                <Clock className="h-5 w-5 text-primary" />
                 <span>{post.readTime}</span>
               </div>
             </div>
@@ -128,15 +145,18 @@ export default function PostDetails() {
         </div>
       </div>
 
+      {/* Corpo do Texto */}
       <article className="container py-12 md:py-20">
         <div className="max-w-4xl mx-auto">
-          <div className="prose prose-lg prose-invert prose-headings:font-bold prose-headings:text-white prose-h1:text-5xl prose-p:text-slate-300 prose-p:mb-8 prose-p:leading-relaxed prose-strong:text-white prose-li:text-slate-300 max-w-none">
+          {/* Aqui removemos as classes de título H1 da div prose, pois o título já está no banner */}
+          <div className="prose prose-lg prose-invert prose-p:text-slate-300 prose-p:mb-8 prose-p:leading-relaxed prose-strong:text-white prose-li:text-slate-300 max-w-none">
             {post.content ? <ReactMarkdown>{post.content}</ReactMarkdown> : <p className="text-slate-400 italic">Sem conteúdo.</p>}
           </div>
-          <div className="mt-12 pt-8 border-t border-slate-800 flex justify-between items-center">
+          
+          <div className="mt-12 pt-8 border-t border-slate-800 flex justify-center items-center">
              <Link href="/artigos">
-                <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white">
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Ver todos os artigos
+                <Button variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white px-8">
+                  <ArrowLeft className="mr-2 h-4 w-4" /> Ler outros artigos
                 </Button>
              </Link>
           </div>
