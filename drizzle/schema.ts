@@ -1,4 +1,4 @@
-import { pgTable, serial, text, varchar, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, varchar, boolean, timestamp, integer } from "drizzle-orm/pg-core";
 
 // ========================================
 // TABELAS DO BLOG VIVA BEM NA ESTRADA
@@ -53,7 +53,7 @@ export const ebooks = pgTable("ebooks", {
   description: text("description").notNull(),
   image: varchar("image", { length: 512 }).notNull(),
   downloadUrl: varchar("downloadUrl", { length: 512 }),
-  pages: serial("pages").notNull(), // Alterado para serial, assumindo que é um contador
+  pages: integer("pages").notNull(), // Alterado para serial, assumindo que é um contador
   published: boolean("published").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
