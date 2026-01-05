@@ -28,6 +28,7 @@ export default function Layout({ children }: LayoutProps) {
 
   const navLinks = [
     { name: "Home", href: "/" },
+    { name: "Artigos", href: "/artigos" },
     { name: "Viva Bem na Estrada", href: "/viva-bem" },
     { name: "Sobre Nós", href: "/sobre" },
     { name: "Ebooks", href: "/ebooks" },

@@ -28,12 +28,13 @@ function Router() {
     <Switch>
       {/* Public Routes */}
       <Route path={"/"} component={Home} />
+      <Route path={"/artigos"} component={PostDetails} />
+      <Route path={"/post/:slug"} component={PostDetails} />
       <Route path={"/sobre"} component={About} />
       <Route path={"/ebooks"} component={Ebooks} />
       <Route path={"/social"} component={Social} />
       <Route path={"/viva-bem"} component={VivaBem} />
-      <Route path="/post/:slug" component={PostDetails} />
-      
+
       {/* Admin Routes */}
       <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/admin/posts"} component={AdminPosts} />

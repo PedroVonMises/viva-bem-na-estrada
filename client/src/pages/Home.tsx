@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Layout from "@/components/Layout";
 import PostCard from "@/components/PostCard";
-import { ArrowRight, Mail, Loader2, X } from "lucide-react";
+import { ArrowRight, Mail, Loader2, X, Link } from "lucide-react";
 import { motion } from "framer-motion";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getPosts, subscribeToNewsletter } from "@shared/data";
@@ -119,9 +119,11 @@ onError: (error: Error) => {
               <Button className="bg-primary hover:bg-primary/90 text-white text-lg px-8 py-6 rounded-lg font-bold shadow-[0_0_20px_rgba(234,88,12,0.4)] transition-all hover:scale-105">
                 Baixe nossos Ebooks
               </Button>
-              <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-800 hover:text-white text-lg px-8 py-6 rounded-lg font-bold backdrop-blur-sm transition-all">
+              <Link href="/artigos">
+                <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-800 hover:text-white text-lg px-8 py-6 rounded-lg font-bold backdrop-blur-sm transition-all">
                 Ver Últimos Artigos
-              </Button>
+                </Button>
+              </Link>
             </div>
           </motion.div>
         </div>
