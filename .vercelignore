@@ -1,0 +1,10 @@
+node_modules
+drizzle
+server
+.env
+.git
+.gitignore
+ideas.md
+todo.md
+vitest.config.ts
+tsconfig.node.json
