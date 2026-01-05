@@ -130,7 +130,7 @@ export default function PostDetails() {
 
       <article className="container py-12 md:py-20">
         <div className="max-w-4xl mx-auto">
-          <div className="prose prose-lg prose-invert prose-headings:font-bold prose-headings:text-white prose-p:text-slate-300 prose-strong:text-white prose-li:text-slate-300 max-w-none">
+          <div className="prose prose-lg prose-invert prose-headings:font-bold prose-headings:text-white prose-p:text-slate-300 prose-p:mb-8 prose-strong:text-white prose-li:text-slate-300 max-w-none">
             {post.content ? <ReactMarkdown>{post.content}</ReactMarkdown> : <p className="text-slate-400 italic">Sem conteúdo.</p>}
           </div>
           <div className="mt-12 pt-8 border-t border-slate-800 flex justify-between items-center">
