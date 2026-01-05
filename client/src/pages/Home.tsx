@@ -119,11 +119,9 @@ onError: (error: Error) => {
               <Button className="bg-primary hover:bg-primary/90 text-white text-lg px-8 py-6 rounded-lg font-bold shadow-[0_0_20px_rgba(234,88,12,0.4)] transition-all hover:scale-105">
                 Baixe nossos Ebooks
               </Button>
-              <Link href="/artigos">
-                <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-800 hover:text-white text-lg px-8 py-6 rounded-lg font-bold backdrop-blur-sm transition-all">
+              <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-800 hover:text-white text-lg px-8 py-6 rounded-lg font-bold backdrop-blur-sm transition-all">
                 Ver Últimos Artigos
-                </Button>
-              </Link>
+              </Button>
             </div>
           </motion.div>
         </div>
