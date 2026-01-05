@@ -4,7 +4,7 @@
 
 **🌐 Site oficial:** [https://vivabemnaestrada.com.br](https://vivabemnaestrada.com.br)
 
-![Status](https://img.shields.io/badge/Status-Em_Desenvolvimento-blue) ![License](https://img.shields.io/badge/License-MIT-green)
+![Status](https://img.shields.io/badge/Status-Desenvolvido-green) ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## 🚀 Tecnologias e Arquitetura
 
