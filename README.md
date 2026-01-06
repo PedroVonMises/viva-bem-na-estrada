@@ -2,7 +2,7 @@
 
 **Viva Bem na Estrada** é uma plataforma moderna dedicada a fornecer informação, segurança e entretenimento para motoristas profissionais. O projeto foi desenvolvido como uma Single Page Application (SPA) de alta performance, totalmente responsiva e construída sobre uma arquitetura **Serverless**, garantindo escalabilidade e facilidade de manutenção.
 
-**🌐 Site oficial:** [https://vivabemnaestrada.com.br](https://vivabemnaestrada.com.br)
+**🌐 Site oficial:** [https://vivabemnaestrada.com.br](https://www.vivabemnaestrada.com.br)
 
 ![Status](https://img.shields.io/badge/Status-Desenvolvido-green) ![License](https://img.shields.io/badge/License-MIT-green)
 
@@ -127,7 +127,7 @@ A aplicação está otimizada para deploy na **Vercel**. O arquivo ``vite.config
 
 ## 📝 Licença
 
-© 2025 Viva Bem na Estrada. Todos os direitos reservados.
+© 2026 Viva Bem na Estrada. Todos os direitos reservados.
 
 ---
 
