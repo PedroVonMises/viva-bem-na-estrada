@@ -115,7 +115,25 @@ export default function Layout({ children }: LayoutProps) {
                   {link.name}
                 </Link>
               ))}
-              <Button className="w-full mt-4 bg-primary text-white py-6 text-lg">
+              <Button 
+                onClick={() => {
+                  // 1. Fecha o menu mobile primeiro
+                  setIsMobileMenuOpen(false);
+                  
+                  // 2. Aplica a mesma lógica de navegação do desktop
+                  if (window.location.pathname === '/') {
+                    // Se já estiver na home, apenas rola até a secção
+                    // Um pequeno timeout ajuda a garantir que o menu fechou e o layout estabilizou
+                    setTimeout(() => {
+                      document.getElementById('newsletter')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  } else {
+                    // Se estiver noutra página, redireciona para a home com a âncora
+                    window.location.href = '/#newsletter';
+                  }
+                }}
+                className="w-full mt-4 bg-primary text-white py-6 text-lg"
+              >
                 Inscreva-se Agora
               </Button>
             </nav>
