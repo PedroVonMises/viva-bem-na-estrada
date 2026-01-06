@@ -145,9 +145,11 @@ onError: (error: Error) => {
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">Destaques da Semana</h2>
               <div className="h-1 w-20 bg-primary rounded-full"></div>
             </div>
-            <Button variant="ghost" className="text-primary hover:text-primary/80 hover:bg-primary/10 hidden md:flex">
-              Ver todos os posts <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <Link href="/artigos">
+              <Button variant="ghost" className="text-primary hover:text-primary/80 hover:bg-primary/10 hidden md:flex">
+                Ver todos os posts <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
 
           {isLoading ? (
@@ -179,9 +181,11 @@ onError: (error: Error) => {
           )}
           
           <div className="mt-8 text-center md:hidden">
-            <Button variant="ghost" className="text-primary hover:text-primary/80 hover:bg-primary/10 w-full">
-              Ver todos os posts <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <Link href="/artigos">
+              <Button variant="ghost" className="text-primary hover:text-primary/80 hover:bg-primary/10 w-full">
+                Ver todos os posts <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
