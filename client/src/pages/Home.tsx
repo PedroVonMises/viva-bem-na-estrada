@@ -12,7 +12,9 @@ import { toast } from "sonner";
 
 
 export default function Home() {
-  const [showIntroVideo, setShowIntroVideo] = useState(true);
+  const [showIntroVideo, setShowIntroVideo] = useState(() => {
+  return typeof window !== 'undefined' ? !window.location.hash.includes('newsletter') : true;
+  });
   const [email, setEmail] = useState("");
   
   // Buscar posts do banco de dados

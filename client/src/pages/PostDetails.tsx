@@ -126,7 +126,7 @@ export default function PostDetails() {
             </Badge>
 
             {/* TÍTULO DA CÉLULA 'TITLE' DO SUPABASE - AGORA GIGANTE E CENTRALIZADO */}
-            <h1 className="text-4xl md:text-5xl lg:text-5xl font-extrabold text-white leading-tight drop-shadow-lg">
+            <h1 className="text-4xl md:text-5 xl lg:text-5xl font-extrabold text-white leading-tight drop-shadow-lg">
               {post.title}
             </h1>
 
