@@ -32,9 +32,9 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     .from("posts")
     .select("*")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
-  if (error && error.code !== "PGRST116") { // PGRST116 é "No rows found"
+  if (error) {
     console.error(`Error fetching post with slug ${slug}:`, error);
     throw new Error(`Failed to fetch post with slug ${slug}.`);
   }
@@ -92,7 +92,7 @@ export async function subscribeToNewsletter(email: string, name?: string): Promi
   if (error) {
     // Tratar erro de duplicidade de email (código 23505 para unique_violation no PostgreSQL)
     if (error.code === "23505") {
-        throw new Error("Email já cadastrado.");
+      throw new Error("Email já cadastrado.");
     }
     console.error("Error subscribing to newsletter:", error);
     throw new Error("Falha ao se inscrever na newsletter.");
